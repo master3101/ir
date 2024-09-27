@@ -1,0 +1,35 @@
+import nltk 
+from nltk.corpus import stopwords 
+from nltk.tokenize import word_tokenize 
+import pandas as pd 
+ 
+# Download the stopwords list if you haven't already 
+nltk.download('stopwords') 
+nltk.download('punkt') 
+def preprocess_text(text): 
+    # Tokenize the text 
+    tokens = word_tokenize(text.lower()) 
+    # Load the list of stop words 
+    stop_words = set(stopwords.words('english')) 
+    # Filter out the stop words 
+    filtered_tokens = [word for word in tokens if word.isalpha() and word not in stop_words] 
+    # Join the filtered tokens back into a string 
+    filtered_text = ' '.join(filtered_tokens) 
+    return filtered_text 
+def preprocess_file(input_file, output_file): 
+    # Read the text from the file 
+    with open(input_file, 'r', encoding='utf-8') as file: 
+        text = file.read() 
+     
+    # Preprocess the text 
+    cleaned_text = preprocess_text(text) 
+    # Save the cleaned text to a new file 
+    with open(output_file, 'w', encoding='utf-8') as file: 
+        file.write(cleaned_text) 
+    print(f"Pre-processed text saved to {output_file}") 
+Shubham Bhandarkar                                                                                                                           
+248606 
+# Example usage 
+input_file = 'input_text.txt' 
+output_file = 'cleaned_text.txt' 
+preprocess_file(input_file, output_file) 

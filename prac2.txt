@@ -1,0 +1,26 @@
+import numpy as np 
+
+def page_rank(links, num_iterations=100, damping_factor=0.85): 
+    num_pages = len(links) 
+    matrix = np.zeros((num_pages, num_pages)) 
+    # Create link matrix
+    for i, link in enumerate(links): 
+        if len(link) == 0: 
+            matrix[i] = np.ones(num_pages) / num_pages  
+        else: 
+            for j in link: 
+                matrix[j][i] = 1/len(link)
+    scores = np.ones(num_pages) / num_pages 
+    
+    # PageRank iterative process
+    for i in range(num_iterations): 
+        scores = (1 - damping_factor) / num_pages + damping_factor * np.matmul(matrix, scores) 
+    
+    return scores 
+
+
+num_pages = 4 
+links = [[1, 2],[1, 2],[2, 3],[2, 2]] 
+page_scores = page_rank(links) 
+for i, score in enumerate(page_scores): 
+    print(f"Page {i+1}: {score}")

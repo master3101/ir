@@ -1,0 +1,57 @@
+def hits_algorithm(graph, max_iter=100, tol=1e-6): 
+    nodes = list(graph.keys()) 
+    authority_scores = {node: 1.0 for node in nodes} 
+    hub_scores = {node: 1.0 for node in nodes} 
+    
+    for _ in range(max_iter): 
+        new_authority_scores = {node: 0.0 for node in nodes} 
+        new_hub_scores = {node: 0.0 for node in nodes} 
+
+        # Update authority scores 
+        for node in nodes: 
+            for neighbor in graph.get(node, []): 
+                new_authority_scores[neighbor] += hub_scores[node] 
+
+        # Update hub scores
+        for node in nodes: 
+            for neighbor in graph: 
+                if node in graph[neighbor]: 
+                    new_hub_scores[node] += authority_scores[neighbor] 
+
+        # Normalize scores 
+        authority_norm = sum(new_authority_scores.values()) ** 0.5 
+        hub_norm = sum(new_hub_scores.values()) ** 0.5 
+        for node in nodes: 
+            authority_scores[node] = new_authority_scores[node] / authority_norm 
+            hub_scores[node] = new_hub_scores[node] / hub_norm 
+
+        # Check for convergence 
+        if all(abs(authority_scores[node] - new_authority_scores[node]) < tol for node in nodes) and \
+           all(abs(hub_scores[node] - new_hub_scores[node]) < tol for node in nodes): 
+            break 
+    
+    return authority_scores, hub_scores 
+
+def get_graph_from_input(): 
+    graph = {} 
+    print("Enter the number of nodes:") 
+    num_nodes = int(input()) 
+    for _ in range(num_nodes): 
+        node = input("Enter node name: ") 
+        graph[node] = [] 
+    print("Enter the number of links:") 
+    num_links = int(input()) 
+    print("Enter links in the format 'from_node to_node':") 
+    for _ in range(num_links): 
+        from_node, to_node = input().split() 
+        if from_node in graph: 
+            graph[from_node].append(to_node) 
+        else: 
+            graph[from_node] = [to_node] 
+    return graph 
+
+# Main execution 
+graph = get_graph_from_input() 
+authority_scores, hub_scores = hits_algorithm(graph) 
+print("\nAuthority Scores:", authority_scores) 
+print("Hub Scores:", hub_scores)

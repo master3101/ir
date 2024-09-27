@@ -1,0 +1,23 @@
+data ='Hello ved here' 
+def mapper(data): 
+    char_counts = {} 
+    for char in data: 
+        if char.isalpha(): 
+            char = char.lower() 
+            if char in char_counts: 
+                char_counts[char] +=1 
+            else: 
+                char_counts[char] = 1 
+    return char_counts 
+def reducer(data): 
+    char_counts={} 
+    for count_dict in data: 
+        for char,count in count_dict.items(): 
+            if char in char_counts: 
+                char_counts[char] += count 
+            else: 
+                char_counts[char] = count 
+    return char_counts 
+mapped_data = [mapper(char) for char in data] 
+reduced_data = reducer(mapped_data) 
+print(reduced_data)
